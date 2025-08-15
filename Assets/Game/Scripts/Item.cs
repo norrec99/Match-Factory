@@ -2,10 +2,20 @@ using UnityEngine;
 
 public class Item : MonoBehaviour
 {
+    [Header("Item Properties")]
     [SerializeField] private Rigidbody rb;
     [SerializeField] private Collider itemCollider;
 
+    [Header("Item Appearance")]
+    [SerializeField] private Renderer itemRenderer;
+    [SerializeField] private Material outlineMaterial;
 
+    private Material baseMaterial;
+
+    private void Awake()
+    {
+        baseMaterial = itemRenderer.material; // Store the base material for the item
+    }
     public void DisablePhysics()
     {
         // Logic for selecting the item
@@ -14,6 +24,19 @@ public class Item : MonoBehaviour
             rb.isKinematic = true; // Prevent physics interactions when deselected
             itemCollider.enabled = false; // Disable collider to prevent further interactions
         }
-        Debug.Log("Item selected: " + gameObject.name);
+    }
+    public void Select()
+    {
+        if (outlineMaterial != null)
+        {
+            itemRenderer.materials = new Material[2] { baseMaterial, outlineMaterial }; // Apply the outline material
+        }
+    }
+    public void Deselect()
+    {
+        if (outlineMaterial != null)
+        {
+            itemRenderer.materials = new Material[1] { baseMaterial }; // Revert to the base material
+        }
     }
 }

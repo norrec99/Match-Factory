@@ -31,19 +31,32 @@ public class InputManager : MonoBehaviour
             {
                 if (hit.collider == null)
                 {
-                    currentItem = null;
+                    DeselectCurrentItem();
                     return;
                 }
 
-                if (hit.collider.GetComponent<Item>() == null)
+                if (!hit.collider.TryGetComponent(out Item item))
                 {
-                    currentItem = null;
+                    DeselectCurrentItem();
                     return;
                 }
 
-                currentItem = hit.collider.GetComponent<Item>();
+                DeselectCurrentItem();
+
+                currentItem = item;
+                currentItem.Select(); // Call the Select method on the item
             }
         }
+    }
+
+    private void DeselectCurrentItem()
+    {
+        if (currentItem != null)
+        {
+            currentItem.Deselect(); // Deselect the item if it exists
+        }
+
+        currentItem = null;
     }
 
     private void HandleInputRelease()
@@ -56,7 +69,7 @@ public class InputManager : MonoBehaviour
             }
 
             OnItemSelected?.Invoke(currentItem);
-            currentItem = null; // Clear the current item after selection
+            DeselectCurrentItem();
         }
     }
 }

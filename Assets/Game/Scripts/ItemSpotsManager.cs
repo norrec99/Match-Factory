@@ -25,12 +25,12 @@ public class ItemSpotsManager : MonoBehaviour
             Debug.LogWarning("Item is null, cannot select.");
             return;
         }
-        
+
         item.transform.SetParent(itemSpotParent); // Set the item's parent to the item spot
 
         item.transform.localPosition = itemLocalPosition; // Set the local position of the item
         item.transform.localScale = itemLocalScale; // Set the local scale of the item
-        
+
         item.DisablePhysics(); // Call the Select method on the item when selected
     }
 

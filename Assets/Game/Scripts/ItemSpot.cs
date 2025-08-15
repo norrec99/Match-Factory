@@ -1,0 +1,18 @@
+using System;
+using UnityEngine;
+
+public class ItemSpot : MonoBehaviour
+{
+    private Item item; // Reference to the item currently in this spot
+
+    public void SetItem(Item newItem)
+    {
+        item = newItem; // Set the item in this spot
+        item.transform.SetParent(transform); // Set the item's parent to this item spot
+    }
+    
+    public bool IsEmpty()
+    {
+        return item == null; // Check if the item spot is empty
+    }
+}

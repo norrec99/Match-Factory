@@ -30,6 +30,7 @@ public class ItemSpotsManager : MonoBehaviour
 
         item.transform.localPosition = itemLocalPosition; // Set the local position of the item
         item.transform.localScale = itemLocalScale; // Set the local scale of the item
+        item.transform.localRotation = Quaternion.identity; // Reset the rotation of the item
 
         item.DisablePhysics(); // Call the Select method on the item when selected
     }

@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class InputManager : MonoBehaviour
 {
+    [Header("Layer Mask")]
+    [SerializeField] private LayerMask itemLayerMask; // Layer mask to filter raycast hits for items
 
     private float rayDistance = 100f; // Distance for raycasting
     private Camera mainCamera;
@@ -27,7 +29,7 @@ public class InputManager : MonoBehaviour
         if (Input.GetMouseButton(0))
         {
             Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out RaycastHit hit, rayDistance))
+            if (Physics.Raycast(ray, out RaycastHit hit, rayDistance, itemLayerMask))
             {
                 if (hit.collider == null)
                 {
@@ -35,7 +37,7 @@ public class InputManager : MonoBehaviour
                     return;
                 }
 
-                if (!hit.collider.TryGetComponent(out Item item))
+                if (!hit.collider.transform.parent.TryGetComponent(out Item item))
                 {
                     DeselectCurrentItem();
                     return;

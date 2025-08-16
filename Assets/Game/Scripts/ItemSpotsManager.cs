@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using DG.Tweening;
 using UnityEngine;
 
 public class ItemSpotsManager : MonoBehaviour
@@ -138,9 +139,9 @@ public class ItemSpotsManager : MonoBehaviour
     {
         targetSpot.SetItem(item); // Set the item in the target item spot
 
-        item.transform.localPosition = itemLocalPosition; // Set the local position of the item
-        item.transform.localScale = itemLocalScale; // Set the local scale of the item
-        item.transform.localRotation = Quaternion.identity; // Reset the rotation of the item
+        item.transform.DOLocalMove(itemLocalPosition, 0.15f);
+        item.transform.DOScale(itemLocalScale, 0.15f).SetEase(Ease.OutBack); // Animate the scale of the item
+        item.transform.DOLocalRotate(Vector3.zero, 0.15f); // Animate the rotation of the item
 
         item.DisablePhysics(); // Disable physics interactions for the item
 
@@ -149,6 +150,8 @@ public class ItemSpotsManager : MonoBehaviour
 
     private void HandleItemReachedSpot(Item item, bool canMerge = true)
     {
+        item.ItemSpot.PlayBumpAnimation(); // Play the bump animation on the item spot
+
         if (!canMerge)
         {
             return;
@@ -177,11 +180,21 @@ public class ItemSpotsManager : MonoBehaviour
             Destroy(itemsToMerge[i].gameObject); // Destroy the item game object
         }
 
-        MoveAllItemsToTheLeft(); // Move all items to the left after merging
+        if (itemMergeDataDictionary.Count <= 0)
+        {
+            isBusy = false;
+        }
+        else
+        {
+            MoveAllItemsToTheLeft(HandleAllItemsMovedToTheLeft); // Move all items to the left after merging
+        }
+
     }
 
-    private void MoveAllItemsToTheLeft()
+    private void MoveAllItemsToTheLeft(Action completeCallback)
     {
+        bool isCallbackInvoked = false;
+
         for (int i = 3; i < itemSpots.Length; i++)
         {
             ItemSpot spot = itemSpots[i];
@@ -203,10 +216,17 @@ public class ItemSpotsManager : MonoBehaviour
 
             spot.ClearItem();
 
-            MoveItemToSpot(item, targetSpot, () => HandleItemReachedSpot(item, false)); // Move the item to the target spot
+            completeCallback += () => HandleItemReachedSpot(item, false); // Add the callback to handle item reaching the spot
+
+            MoveItemToSpot(item, targetSpot, completeCallback); // Move the item to the target spot
+
+            isCallbackInvoked = true; // Set the flag to indicate that the callback has been invoked
         }
     
-        HandleAllItemsMovedToTheLeft();
+        if (!isCallbackInvoked)
+        {
+            completeCallback?.Invoke(); // Invoke the callback if no items were moved
+        }
     }
 
     private void HandleAllItemsMovedToTheLeft()
@@ -250,6 +270,7 @@ public class ItemSpotsManager : MonoBehaviour
 
     private void HandleFirstItemReachedSpot(Item item)
     {
+        item.ItemSpot.PlayBumpAnimation(); // Play the bump animation on the item spot
         CheckForGameOver();
     }
 

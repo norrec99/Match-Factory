@@ -18,4 +18,10 @@ public struct ItemMergeData
     {
         Items.Add(item);
     }
+
+    public bool CanMergeItems()
+    {
+        // Check if the number of items is sufficient for merging
+        return Items.Count >= 3;
+    }
 }

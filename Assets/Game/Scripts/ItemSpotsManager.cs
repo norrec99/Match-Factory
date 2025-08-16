@@ -114,7 +114,35 @@ public class ItemSpotsManager : MonoBehaviour
 
         item.DisablePhysics(); // Disable physics interactions for the item
         
-        HandleFirstItemReachedSpot(item); // Handle the first item reaching the spot
+        HandleItemReachedSpot(item); // Handle the first item reaching the spot
+    }
+
+    private void HandleItemReachedSpot(Item item)
+    {
+        if (itemMergeDataDictionary[item.ItemType].CanMergeItems())
+        {
+            MergeItems(itemMergeDataDictionary[item.ItemType]);
+        }
+        else
+        {
+            CheckForGameOver();
+        }
+    }
+
+    private void MergeItems(ItemMergeData itemMergeData)
+    {
+        List<Item> itemsToMerge = itemMergeData.Items;
+
+        itemMergeDataDictionary.Remove(itemMergeData.ItemType); // Remove the merge data for the dictionary
+
+        for (int i = 0; i < itemsToMerge.Count; i++)
+        {
+            itemsToMerge[i].ItemSpot.ClearItem(); // Clear the item spot for each item being merged
+
+            Destroy(itemsToMerge[i].gameObject); // Destroy the item game object
+        }
+
+        isBusy = false; // Reset the busy state after merging items
     }
 
     private ItemSpot GetIdealSpotForItem(Item item)
@@ -148,7 +176,15 @@ public class ItemSpotsManager : MonoBehaviour
 
         CreateItemMergeData(item); // Create or update the item merge data
 
-        MoveItemToSpot(item, targetItemSpot); // Move the item to the first free spot
+        targetItemSpot.SetItem(item); // Set the item in the target item spot
+
+        item.transform.localPosition = itemLocalPosition; // Set the local position of the item
+        item.transform.localScale = itemLocalScale; // Set the local scale of the item
+        item.transform.localRotation = Quaternion.identity; // Reset the rotation of the item
+
+        item.DisablePhysics(); // Disable physics interactions for the item
+        
+        HandleFirstItemReachedSpot(item); // Handle the first item reaching the spot
     }
 
     private void HandleFirstItemReachedSpot(Item item)

@@ -12,6 +12,11 @@ public class ItemSpot : MonoBehaviour
 
         item.SetItemSpot(this); // Set the item spot reference in the item
     }
+
+    public void ClearItem()
+    {
+        item = null; // Clear the item reference
+    }
     
     public bool IsEmpty()
     {

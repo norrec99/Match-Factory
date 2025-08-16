@@ -96,7 +96,7 @@ public class ItemSpotsManager : MonoBehaviour
             return;
         }
 
-        MoveItemToSpot(item, idealSpot); // Move the item to the ideal spot
+        MoveItemToSpot(item, idealSpot, () => HandleItemReachedSpot(item)); // Move the item to the ideal spot
     }
 
     private void HandleIdealSpotOccupied(Item item, ItemSpot idealSpot)
@@ -128,13 +128,13 @@ public class ItemSpotsManager : MonoBehaviour
                 return;
             }
 
-            MoveItemToSpot(item, targetSpot, false); // Move the item to the target spot
+            MoveItemToSpot(item, targetSpot, () => HandleItemReachedSpot(item, false)); // Move the item to the target spot
         }
         
-        MoveItemToSpot(itemToPlace, idealSpot); // Move the item to the ideal spot
+        MoveItemToSpot(itemToPlace, idealSpot, () => HandleItemReachedSpot(itemToPlace)); // Move the item to the ideal spot
     }
 
-    private void MoveItemToSpot(Item item, ItemSpot targetSpot, bool canMerge = true)
+    private void MoveItemToSpot(Item item, ItemSpot targetSpot, Action completeCallback)
     {
         targetSpot.SetItem(item); // Set the item in the target item spot
 
@@ -143,8 +143,8 @@ public class ItemSpotsManager : MonoBehaviour
         item.transform.localRotation = Quaternion.identity; // Reset the rotation of the item
 
         item.DisablePhysics(); // Disable physics interactions for the item
-        
-        HandleItemReachedSpot(item, canMerge); // Handle the first item reaching the spot
+
+        completeCallback?.Invoke();
     }
 
     private void HandleItemReachedSpot(Item item, bool canMerge = true)
@@ -203,7 +203,7 @@ public class ItemSpotsManager : MonoBehaviour
 
             spot.ClearItem();
 
-            MoveItemToSpot(item, targetSpot, false); // Move the item to the target spot
+            MoveItemToSpot(item, targetSpot, () => HandleItemReachedSpot(item, false)); // Move the item to the target spot
         }
     
         HandleAllItemsMovedToTheLeft();
@@ -245,15 +245,7 @@ public class ItemSpotsManager : MonoBehaviour
 
         CreateItemMergeData(item); // Create or update the item merge data
 
-        targetItemSpot.SetItem(item); // Set the item in the target item spot
-
-        item.transform.localPosition = itemLocalPosition; // Set the local position of the item
-        item.transform.localScale = itemLocalScale; // Set the local scale of the item
-        item.transform.localRotation = Quaternion.identity; // Reset the rotation of the item
-
-        item.DisablePhysics(); // Disable physics interactions for the item
-        
-        HandleFirstItemReachedSpot(item); // Handle the first item reaching the spot
+        MoveItemToSpot(item, targetItemSpot, () => HandleFirstItemReachedSpot(item)); // Move the item to the first free spot
     }
 
     private void HandleFirstItemReachedSpot(Item item)

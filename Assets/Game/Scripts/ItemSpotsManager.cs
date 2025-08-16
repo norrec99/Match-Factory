@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class ItemSpotsManager : MonoBehaviour
@@ -80,7 +81,59 @@ public class ItemSpotsManager : MonoBehaviour
 
     private void HandleItemMergeDataFound(Item item)
     {
+        ItemSpot idealSpot = GetIdealSpotForItem(item);
+
+        itemMergeDataDictionary[item.ItemType].AddItem(item); // Add the item to the existing ItemMergeData
+
+        TryMoveItemToIdealSpot(item, idealSpot);
+    }
+
+    private void TryMoveItemToIdealSpot(Item item, ItemSpot idealSpot)
+    {
+        if (!idealSpot.IsEmpty())
+        {
+            HandleIdealSpotOccupied(item, idealSpot);
+            return;
+        }
+
+        MoveItemToSpot(item, idealSpot); // Move the item to the ideal spot
+    }
+
+    private void HandleIdealSpotOccupied(Item item, ItemSpot idealSpot)
+    {
         throw new NotImplementedException();
+    }
+
+    private void MoveItemToSpot(Item item, ItemSpot targetSpot)
+    {
+        targetSpot.SetItem(item); // Set the item in the target item spot
+
+        item.transform.localPosition = itemLocalPosition; // Set the local position of the item
+        item.transform.localScale = itemLocalScale; // Set the local scale of the item
+        item.transform.localRotation = Quaternion.identity; // Reset the rotation of the item
+
+        item.DisablePhysics(); // Disable physics interactions for the item
+        
+        HandleFirstItemReachedSpot(item); // Handle the first item reaching the spot
+    }
+
+    private ItemSpot GetIdealSpotForItem(Item item)
+    {
+        List<Item> itemsInMergeData = itemMergeDataDictionary[item.ItemType].Items;
+        List<ItemSpot> itemSpotsWithSameType = new List<ItemSpot>();
+
+        for (int i = 0; i < itemsInMergeData.Count; i++)
+        {
+            itemSpotsWithSameType.Add(itemsInMergeData[i].ItemSpot); // Collect item spots that have the same item type
+        }
+
+        if (itemSpotsWithSameType.Count >= 2)
+        {
+            itemSpotsWithSameType.Sort((a, b) => b.transform.GetSiblingIndex().CompareTo(a.transform.GetSiblingIndex())); // Sort by sibling index in descending order
+        }
+        int idealSpotIndex = itemSpotsWithSameType[0].transform.GetSiblingIndex() + 1; // Get the next sibling index for the ideal spot
+
+        return itemSpots[idealSpotIndex]; // Return the item spot at the ideal index
     }
 
     private void MoveItemToFirstFreeSpot(Item item)
@@ -95,15 +148,7 @@ public class ItemSpotsManager : MonoBehaviour
 
         CreateItemMergeData(item); // Create or update the item merge data
 
-        targetItemSpot.SetItem(item); // Set the item in the target item spot
-
-        item.transform.localPosition = itemLocalPosition; // Set the local position of the item
-        item.transform.localScale = itemLocalScale; // Set the local scale of the item
-        item.transform.localRotation = Quaternion.identity; // Reset the rotation of the item
-
-        item.DisablePhysics(); // Disable physics interactions for the item
-        
-        HandleFirstItemReachedSpot(item); // Handle the first item reaching the spot
+        MoveItemToSpot(item, targetItemSpot); // Move the item to the first free spot
     }
 
     private void HandleFirstItemReachedSpot(Item item)

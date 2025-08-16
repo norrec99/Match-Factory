@@ -11,6 +11,11 @@ public struct ItemMergeData
         ItemType = firstItem.ItemType;
 
         Items = new List<Item>();
-        Items.Add(firstItem);
+        AddItem(firstItem);
+    }
+
+    public void AddItem(Item item)
+    {
+        Items.Add(item);
     }
 }

@@ -9,6 +9,8 @@ public class ItemSpot : MonoBehaviour
     {
         item = newItem; // Set the item in this spot
         item.transform.SetParent(transform); // Set the item's parent to this item spot
+
+        item.SetItemSpot(this); // Set the item spot reference in the item
     }
     
     public bool IsEmpty()

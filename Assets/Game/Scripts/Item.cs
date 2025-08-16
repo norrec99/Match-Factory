@@ -15,6 +15,9 @@ public class Item : MonoBehaviour
 
     public ItemType ItemType => itemType; // Property to access the item type
 
+    private ItemSpot itemSpot; // Reference to the item spot where this item is placed
+    public ItemSpot ItemSpot => itemSpot; // Property to access the item spot
+
     private void Awake()
     {
         baseMaterial = itemRenderer.material; // Store the base material for the item
@@ -41,5 +44,9 @@ public class Item : MonoBehaviour
         {
             itemRenderer.materials = new Material[1] { baseMaterial }; // Revert to the base material
         }
+    }
+    public void SetItemSpot(ItemSpot spot)
+    {
+        itemSpot = spot; // Set the item spot for this item
     }
 }

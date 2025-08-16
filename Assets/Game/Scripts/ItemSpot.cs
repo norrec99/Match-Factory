@@ -33,7 +33,7 @@ public class ItemSpot : MonoBehaviour
     {
         if (itemParent == null) return;
 
-        sequence?.Kill();
+        sequence?.Kill(true);
         sequence = DOTween.Sequence();
         Vector3 startPos = itemParent.localPosition;
         float bumpHeight = -0.03f; // How much to bump up (customize as needed)

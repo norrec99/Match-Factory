@@ -16,6 +16,10 @@ public class ItemSpotsManager : MonoBehaviour
 
     private Dictionary<ItemType, ItemMergeData> itemMergeDataDictionary = new Dictionary<ItemType, ItemMergeData>();
 
+    public static Action<List<Item>> ItemsMergeStartedAction;
+
+    private Sequence sequence;
+
 
     private void Awake()
     {
@@ -139,13 +143,16 @@ public class ItemSpotsManager : MonoBehaviour
     {
         targetSpot.SetItem(item); // Set the item in the target item spot
 
-        item.transform.DOLocalMove(itemLocalPosition, 0.15f);
-        item.transform.DOScale(itemLocalScale, 0.15f).SetEase(Ease.OutBack); // Animate the scale of the item
-        item.transform.DOLocalRotate(Vector3.zero, 0.15f); // Animate the rotation of the item
+        sequence?.Kill(true); // Kill any existing sequence to prevent conflicts
+        sequence = DOTween.Sequence();
+        sequence.Append(item.transform.DOLocalMove(itemLocalPosition, 0.15f));
+        sequence.Join(item.transform.DOScale(itemLocalScale, 0.15f).SetEase(Ease.OutBack));
+        sequence.Join(item.transform.DOLocalRotate(Vector3.zero, 0.15f));
+        sequence.OnComplete(() => {
+            completeCallback?.Invoke();
+        });
 
         item.DisablePhysics(); // Disable physics interactions for the item
-
-        completeCallback?.Invoke();
     }
 
     private void HandleItemReachedSpot(Item item, bool canMerge = true)
@@ -176,8 +183,6 @@ public class ItemSpotsManager : MonoBehaviour
         for (int i = 0; i < itemsToMerge.Count; i++)
         {
             itemsToMerge[i].ItemSpot.ClearItem(); // Clear the item spot for each item being merged
-
-            Destroy(itemsToMerge[i].gameObject); // Destroy the item game object
         }
 
         if (itemMergeDataDictionary.Count <= 0)
@@ -188,6 +193,8 @@ public class ItemSpotsManager : MonoBehaviour
         {
             MoveAllItemsToTheLeft(HandleAllItemsMovedToTheLeft); // Move all items to the left after merging
         }
+
+        ItemsMergeStartedAction?.Invoke(itemsToMerge); // Invoke the event with the merged items
 
     }
 

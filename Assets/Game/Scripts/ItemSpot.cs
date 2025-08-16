@@ -4,6 +4,7 @@ using UnityEngine;
 public class ItemSpot : MonoBehaviour
 {
     private Item item; // Reference to the item currently in this spot
+    public Item Item => item; // Property to access the item in this spot
 
     public void SetItem(Item newItem)
     {

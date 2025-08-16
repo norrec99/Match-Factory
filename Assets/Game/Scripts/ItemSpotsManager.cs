@@ -101,10 +101,40 @@ public class ItemSpotsManager : MonoBehaviour
 
     private void HandleIdealSpotOccupied(Item item, ItemSpot idealSpot)
     {
-        throw new NotImplementedException();
+        MoveAllItemsToTheRight(idealSpot, item); // Move all items to the right of the ideal spot
     }
 
-    private void MoveItemToSpot(Item item, ItemSpot targetSpot)
+    private void MoveAllItemsToTheRight(ItemSpot idealSpot, Item itemToPlace)
+    {
+        int idealSpotIndex = idealSpot.transform.GetSiblingIndex();
+        for (int i = itemSpots.Length - 2; i >= idealSpotIndex; i--)
+        {
+            ItemSpot spot = itemSpots[i];
+            if (spot.IsEmpty())
+            {
+                continue; // Skip if the current spot is empty
+            }
+
+            Item item = spot.Item; // Get the item in the current spot
+
+            spot.ClearItem(); // Clear the current item spot
+
+            ItemSpot targetSpot = itemSpots[i + 1]; // Get the next item spot
+
+            if (!targetSpot.IsEmpty())
+            {
+                Debug.LogError("ERROR: Target item spot is not empty, cannot move item.");
+                isBusy = false;
+                return;
+            }
+
+            MoveItemToSpot(item, targetSpot, false); // Move the item to the target spot
+        }
+        
+        MoveItemToSpot(itemToPlace, idealSpot); // Move the item to the ideal spot
+    }
+
+    private void MoveItemToSpot(Item item, ItemSpot targetSpot, bool canMerge = true)
     {
         targetSpot.SetItem(item); // Set the item in the target item spot
 
@@ -114,19 +144,24 @@ public class ItemSpotsManager : MonoBehaviour
 
         item.DisablePhysics(); // Disable physics interactions for the item
         
-        HandleItemReachedSpot(item); // Handle the first item reaching the spot
+        HandleItemReachedSpot(item, canMerge); // Handle the first item reaching the spot
     }
 
-    private void HandleItemReachedSpot(Item item)
+    private void HandleItemReachedSpot(Item item, bool canMerge = true)
     {
+        if (!canMerge)
+        {
+            return;
+        }
+
         if (itemMergeDataDictionary[item.ItemType].CanMergeItems())
-        {
-            MergeItems(itemMergeDataDictionary[item.ItemType]);
-        }
-        else
-        {
-            CheckForGameOver();
-        }
+            {
+                MergeItems(itemMergeDataDictionary[item.ItemType]);
+            }
+            else
+            {
+                CheckForGameOver();
+            }
     }
 
     private void MergeItems(ItemMergeData itemMergeData)
@@ -142,7 +177,41 @@ public class ItemSpotsManager : MonoBehaviour
             Destroy(itemsToMerge[i].gameObject); // Destroy the item game object
         }
 
-        isBusy = false; // Reset the busy state after merging items
+        MoveAllItemsToTheLeft(); // Move all items to the left after merging
+    }
+
+    private void MoveAllItemsToTheLeft()
+    {
+        for (int i = 3; i < itemSpots.Length; i++)
+        {
+            ItemSpot spot = itemSpots[i];
+            if (spot.IsEmpty())
+            {
+                continue; // Skip if the current spot is empty
+            }
+
+            Item item = spot.Item;
+
+            ItemSpot targetSpot = itemSpots[i - 3];
+
+            if (!targetSpot.IsEmpty())
+            {
+                Debug.LogError($"{targetSpot.name} is full");
+                isBusy = false;
+                return;
+            }
+
+            spot.ClearItem();
+
+            MoveItemToSpot(item, targetSpot, false); // Move the item to the target spot
+        }
+    
+        HandleAllItemsMovedToTheLeft();
+    }
+
+    private void HandleAllItemsMovedToTheLeft()
+    {
+        isBusy = false;
     }
 
     private ItemSpot GetIdealSpotForItem(Item item)

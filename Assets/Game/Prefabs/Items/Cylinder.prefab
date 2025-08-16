@@ -73,6 +73,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a468faf9d4a4ff449b4f80d24bd29fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  itemType: 3
   rb: {fileID: 8709683404774651417}
   itemCollider: {fileID: 3480743511689786198}
   itemRenderer: {fileID: 7154947389961566735}

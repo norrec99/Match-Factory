@@ -3,6 +3,7 @@ using UnityEngine;
 public class Item : MonoBehaviour
 {
     [Header("Item Properties")]
+    [SerializeField] private ItemType itemType; // Type of the item]
     [SerializeField] private Rigidbody rb;
     [SerializeField] private Collider itemCollider;
 
@@ -11,6 +12,8 @@ public class Item : MonoBehaviour
     [SerializeField] private Material outlineMaterial;
 
     private Material baseMaterial;
+
+    public ItemType ItemType => itemType; // Property to access the item type
 
     private void Awake()
     {

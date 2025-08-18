@@ -17,6 +17,7 @@ public class ItemSpotsManager : MonoBehaviour
     private Dictionary<ItemType, ItemMergeData> itemMergeDataDictionary = new Dictionary<ItemType, ItemMergeData>();
 
     public static Action<List<Item>> ItemsMergeStartedAction;
+    public static Action<Item> ItemPickedUpAction;
 
     private Sequence sequence;
 
@@ -54,6 +55,8 @@ public class ItemSpotsManager : MonoBehaviour
         }
 
         isBusy = true;
+
+        ItemPickedUpAction?.Invoke(item); // Invoke the event for item picked up
 
         HandleItemClicked(item); // Handle the item click event
     }

@@ -49,4 +49,10 @@ public class Item : MonoBehaviour
     {
         itemSpot = spot; // Set the item spot for this item
     }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, 0.1f); // Draw a wire sphere around the item for visualization
+    }
 }

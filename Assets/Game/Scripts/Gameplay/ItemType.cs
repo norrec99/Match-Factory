@@ -2,8 +2,8 @@ using UnityEngine;
 
 public enum ItemType
 {
-    Cube,
-    Sphere,
-    Capsule,
-    Cylinder,
+    Clock,
+    Coin,
+    BluePotion,
+    Battery,
 }

@@ -594,8 +594,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemSpotsParent: {fileID: 1348260354}
-  itemLocalPosition: {x: 0, y: 0.09, z: 0}
-  itemLocalScale: {x: 0.13, y: 0.13, z: 0.13}
+  itemLocalPosition: {x: 0, y: 0.02, z: 0}
+  itemLocalScale: {x: 0.1, y: 0.1, z: 0.1}
 --- !u!4 &473747827
 Transform:
   m_ObjectHideFlags: 0

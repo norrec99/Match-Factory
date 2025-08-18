@@ -8,6 +8,7 @@ public struct ItemLevelData
     [NaughtyAttributes.AllowNesting]
     [Range(0, 100)]
     public int amount;
+    public bool isGoal;
 
     private bool ValidateAmount()
     {

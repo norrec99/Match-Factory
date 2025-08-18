@@ -1,5 +1,7 @@
 using NaughtyAttributes;
 using UnityEngine;
+using System.Collections.Generic;
+
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -12,6 +14,20 @@ public class ItemPlacer : MonoBehaviour
     [Header("Spawn Settings")]
     [SerializeField] private BoxCollider spawnZone;
     [SerializeField] private int seed;
+
+    public ItemLevelData[] GetGoals()
+    {
+        List<ItemLevelData> goals = new List<ItemLevelData>();
+        foreach (var itemData in itemDatas)
+        {
+            if (itemData.isGoal)
+            {
+                goals.Add(itemData);
+            }
+        }
+
+        return goals.ToArray();
+    }
 
 
 #if UNITY_EDITOR

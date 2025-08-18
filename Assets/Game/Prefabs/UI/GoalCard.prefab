@@ -76,6 +76,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   amountText: {fileID: 4187608047465400355}
   checkmarkImage: {fileID: 3651271866430177425}
+  itemIcon: {fileID: 4636660672180077632}
 --- !u!1 &3193321262185553080
 GameObject:
   m_ObjectHideFlags: 0

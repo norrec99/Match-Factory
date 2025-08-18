@@ -78,6 +78,7 @@ MonoBehaviour:
   itemCollider: {fileID: 5064967926402862005}
   itemRenderer: {fileID: 7154947389961566735}
   outlineMaterial: {fileID: 2100000, guid: 1772859b905e68248beaf03286685b29, type: 2}
+  itemIcon: {fileID: 21300000, guid: 16788419378d1764bb62308a9a532a0c, type: 3}
 --- !u!1 &3552906725537712153
 GameObject:
   m_ObjectHideFlags: 0

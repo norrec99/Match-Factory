@@ -10,6 +10,7 @@ public class Item : MonoBehaviour
     [Header("Item Appearance")]
     [SerializeField] private Renderer itemRenderer;
     [SerializeField] private Material outlineMaterial;
+    [SerializeField] private Sprite itemIcon;
 
     private Material baseMaterial;
 
@@ -17,6 +18,7 @@ public class Item : MonoBehaviour
 
     private ItemSpot itemSpot; // Reference to the item spot where this item is placed
     public ItemSpot ItemSpot => itemSpot; // Property to access the item spot
+    public Sprite ItemIcon => itemIcon; // Property to access the item icon
 
     private void Awake()
     {

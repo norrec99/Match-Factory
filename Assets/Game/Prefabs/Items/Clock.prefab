@@ -187,3 +187,4 @@ MonoBehaviour:
   itemCollider: {fileID: 5805408571078316101}
   itemRenderer: {fileID: 7080080807199677438}
   outlineMaterial: {fileID: 2100000, guid: 1772859b905e68248beaf03286685b29, type: 2}
+  itemIcon: {fileID: 21300000, guid: d640a68c13d741b4fa2658ee215d5a99, type: 3}

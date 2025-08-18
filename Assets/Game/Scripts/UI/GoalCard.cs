@@ -6,10 +6,13 @@ public class GoalCard : MonoBehaviour
 {
     [SerializeField] private TMP_Text amountText;
     [SerializeField] private Image checkmarkImage;
+    [SerializeField] private Image itemIcon;
 
-    public void SetGoalCard(int amount)
+    public void SetGoalCard(int amount, Sprite icon)
     {
         amountText.text = amount.ToString();
+        itemIcon.sprite = icon;
+
     }
 
     public void UpdateGoalCard(int amount)

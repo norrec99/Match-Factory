@@ -65,15 +65,15 @@ public class MergeManager : MonoBehaviour
 
     private void FinalizeMerge(List<Item> items)
     {
-        for (int i = 0; i < items.Count; i++)
-        {
-            Destroy(items[i].gameObject); // Destroy the items after merging
-
-        }
         if (mergeParticles != null)
         {
             ParticleSystem particles = Instantiate(mergeParticles, items[1].transform.position, Quaternion.identity);
             particles.Play();
+        }
+        for (int i = 0; i < items.Count; i++)
+        {
+            Destroy(items[i].gameObject); // Destroy the items after merging
+
         }
     }
 

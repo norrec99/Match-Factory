@@ -33,12 +33,7 @@ public class ItemPlacer : MonoBehaviour
 
     public Item[] GetItems()
     {
-        if (items == null)
-        {
-            items = GetComponentsInChildren<Item>();
-        }
-
-        return items;
+        return GetComponentsInChildren<Item>();
     }
 
 

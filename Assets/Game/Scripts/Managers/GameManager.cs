@@ -43,4 +43,14 @@ public class GameManager : MonoBehaviour
     {
         SetGameState(EGameState.Game);
     }
+
+    public void CompleteLevel()
+    {
+        SetGameState(EGameState.LevelComplete);
+    }
+
+    public void GameOver()
+    {
+        SetGameState(EGameState.GameOver);
+    }
 }

@@ -81,8 +81,7 @@ public class GoalManager : MonoBehaviour
             }
         }
 
-        Debug.Log("All goals completed! Level can be considered finished.");
-        // Trigger level completion logic here, e.g., load next level or show completion UI
+        GameManager.Instance.CompleteLevel();
     }
 
     private void UnsubscribeEvents()

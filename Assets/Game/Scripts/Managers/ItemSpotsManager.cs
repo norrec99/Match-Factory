@@ -288,7 +288,7 @@ public class ItemSpotsManager : MonoBehaviour
     {
         if (!IsFreeSpotAvailable())
         {
-            Debug.LogWarning("Game Over: No free item spots available.");
+            GameManager.Instance.GameOver(); // Trigger game over if no free spots are available
         }
         else
         {

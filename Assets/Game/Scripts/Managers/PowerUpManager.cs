@@ -11,6 +11,8 @@ public class PowerUpManager : MonoBehaviour
     [SerializeField] private Vacuum vacuum;
     [Header("Fan Power-Up Settings")]
     [SerializeField] private float fanMagnitiude;
+    [Header("Fan Power-Up Settings")]
+    [SerializeField] private float freezeDuration = 10f;
     [Header("Data")]
     [SerializeField] private int initialPowerupCount;
 
@@ -57,7 +59,13 @@ public class PowerUpManager : MonoBehaviour
                 break;
         }
     }
-
+    #region Freeze Power-Up Logic
+    [Button]
+    private void FreezePowerUp()
+    {
+        TimerManager.Instance.FreezeTimer(freezeDuration);
+    }
+    #endregion
     #region Fan Power-Up Logic
     [Button]
     private void FanPowerUp()

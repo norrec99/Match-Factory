@@ -7,10 +7,23 @@ public class TimerManager : MonoBehaviour, IGameStateListener
     [SerializeField] private TMP_Text timerText;
 
     private float currentTimer;
+    private float freezeTimer;
+
     private bool isTimerActive;
+    private bool isFreezeTimerActive;
+
+    public static TimerManager Instance;
 
     private void Awake()
     {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
         ListenEvents();
     }
 
@@ -35,10 +48,23 @@ public class TimerManager : MonoBehaviour, IGameStateListener
 
     private void Update()
     {
-        if (!isTimerActive)
+        if (isFreezeTimerActive)
         {
-            return;
+            if (freezeTimer > 0f)
+            {
+                freezeTimer -= Time.deltaTime;
+                if (freezeTimer < 0f)
+                {
+                    freezeTimer = 0f;
+                    isTimerActive = true;
+                    isFreezeTimerActive = false;
+                }
+            }
         }
+        if (!isTimerActive)
+            {
+                return;
+            }
         if (currentTimer > 0f)
         {
             currentTimer -= Time.deltaTime;
@@ -65,6 +91,14 @@ public class TimerManager : MonoBehaviour, IGameStateListener
     private void OnTimerCompleted()
     {
         GameManager.Instance.GameOver();
+    }
+
+    public void FreezeTimer(float freezeDuration)
+    {
+        isTimerActive = false;
+        isFreezeTimerActive = true;
+
+        freezeTimer = freezeDuration;
     }
 
     private void UnsubscribeEvents()

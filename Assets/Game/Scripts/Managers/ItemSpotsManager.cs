@@ -21,9 +21,19 @@ public class ItemSpotsManager : MonoBehaviour
 
     private Sequence sequence;
 
+    public static ItemSpotsManager Instance;
 
     private void Awake()
     {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+
         ListenEvents();
 
         StoreItemSpots();
@@ -32,6 +42,22 @@ public class ItemSpotsManager : MonoBehaviour
     private void ListenEvents()
     {
         InputManager.ItemSelectedAction += OnItemClicked;
+        PowerUpManager.ItemBackToGameAction += OnItemBackToGame;
+    }
+
+    private void OnItemBackToGame(Item releasedItem)
+    {
+        if (!itemMergeDataDictionary.ContainsKey(releasedItem.ItemType))
+        {
+            return;
+        }
+
+        itemMergeDataDictionary[releasedItem.ItemType].RemoveItem(releasedItem); // Remove the item from the merge data
+
+        if (itemMergeDataDictionary[releasedItem.ItemType].Items.Count <= 0)
+        {
+            itemMergeDataDictionary.Remove(releasedItem.ItemType); // Remove the merge data if no items left
+        }
     }
 
     private void OnItemClicked(Item item)
@@ -313,6 +339,27 @@ public class ItemSpotsManager : MonoBehaviour
         return null; // Return null if no empty item spots are found
     }
 
+    public ItemSpot GetRandomOccupiedItemSpot()
+    {
+        List<ItemSpot> occupiedSpots = new List<ItemSpot>();
+
+        for (int i = 0; i < itemSpots.Length; i++)
+        {
+            if (itemSpots[i].IsEmpty())
+            {
+                continue;
+            }
+            occupiedSpots.Add(itemSpots[i]); // Collect all occupied item spots
+        }
+
+        if (occupiedSpots.Count <= 0)
+        {
+            return null; // Return null if no occupied item spots are found
+        }
+
+        return occupiedSpots[UnityEngine.Random.Range(0, occupiedSpots.Count)]; // Return a random occupied item spot
+    }
+
     private bool IsFreeSpotAvailable()
     {
         for (int i = 0; i < itemSpots.Length; i++)
@@ -328,6 +375,7 @@ public class ItemSpotsManager : MonoBehaviour
     private void UnsubscribeEvents()
     {
         InputManager.ItemSelectedAction -= OnItemClicked;
+        PowerUpManager.ItemBackToGameAction -= OnItemBackToGame;
     }
 
     private void OnDestroy()

@@ -7,6 +7,8 @@ public class Level : MonoBehaviour
 
     public float LevelDuration => levelDuration;
 
+    public Transform ItemParent => itemPlacer.transform;
+
 
     public ItemLevelData[] GetGoals()
     {

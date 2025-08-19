@@ -18,6 +18,10 @@ public struct ItemMergeData
     {
         Items.Add(item);
     }
+    public void RemoveItem(Item item)
+    {
+        Items.Remove(item);
+    }
 
     public bool CanMergeItems()
     {

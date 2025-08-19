@@ -20,6 +20,7 @@ public class PowerUpManager : MonoBehaviour
     private int vacuumPowerupCount;
 
     public static Action<Item> OnVacuumPowerUpUsed;
+    public static Action<Item> ItemBackToGameAction;
 
     private const int MAX_VACUUM_ITEMS = 3;
 
@@ -55,6 +56,34 @@ public class PowerUpManager : MonoBehaviour
         }
     }
 
+    #region Spring Power-Up Logic
+    [Button]
+    private void SpringPowerUp()
+    {
+        ItemSpot itemSpot = ItemSpotsManager.Instance.GetRandomOccupiedItemSpot();
+
+        if (itemSpot == null)
+        {
+            return;
+        }
+
+        isBusy = true;
+
+        Item itemToRelease = itemSpot.Item;
+
+        itemSpot.ClearItem();
+
+        itemToRelease.UnassignItemSpot();
+        itemToRelease.EnablePhysics();
+
+        itemToRelease.transform.parent = LevelManager.Instance.ItemParent;
+        itemToRelease.transform.localPosition = Vector3.up * 3f;
+        itemToRelease.transform.localScale = Vector3.one;
+
+        ItemBackToGameAction?.Invoke(itemToRelease);
+    }
+    #endregion
+    #region Vacuum Power-Up Logic
     private void HandleVacuumClicked()
     {
         if (vacuumPowerupCount <= 0)
@@ -129,6 +158,26 @@ public class PowerUpManager : MonoBehaviour
         }
     }
 
+    private void ItemReachedVacuumPoint(Item item)
+    {
+        vacuumCounter++;
+
+        if (vacuumCounter >= vacuumItemsToCollect)
+        {
+           isBusy = false;
+        }
+
+        OnVacuumPowerUpUsed?.Invoke(item);
+
+        Destroy(item.gameObject);
+    }
+
+    private void UpdateVacuumVisuals()
+    {
+       vacuum.UpdateVisuals(vacuumPowerupCount);
+    }
+    #endregion
+
     private ItemLevelData? GetGreatestGoal(ItemLevelData[] goals)
     {
         int maxAmount = 0;
@@ -148,25 +197,6 @@ public class PowerUpManager : MonoBehaviour
         }
 
         return goals[greatestGoalIndex];
-    }
-
-    private void ItemReachedVacuumPoint(Item item)
-    {
-        vacuumCounter++;
-
-        if (vacuumCounter >= vacuumItemsToCollect)
-        {
-           isBusy = false;
-        }
-
-        OnVacuumPowerUpUsed?.Invoke(item);
-
-        Destroy(item.gameObject);
-    }
-
-    private void UpdateVacuumVisuals()
-    {
-       vacuum.UpdateVisuals(vacuumPowerupCount);
     }
 
     private void LoadData()

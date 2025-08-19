@@ -33,6 +33,15 @@ public class Item : MonoBehaviour
             itemCollider.enabled = false; // Disable collider to prevent further interactions
         }
     }
+    public void EnablePhysics()
+    {
+        // Logic for deselecting the item
+        if (rb != null)
+        {
+            rb.isKinematic = false; // Re-enable physics interactions when selected
+            itemCollider.enabled = true; // Re-enable collider to allow interactions
+        }
+    }
     public void Select()
     {
         if (outlineMaterial != null)
@@ -50,6 +59,10 @@ public class Item : MonoBehaviour
     public void SetItemSpot(ItemSpot spot)
     {
         itemSpot = spot; // Set the item spot for this item
+    }
+    public void UnassignItemSpot()
+    {
+        itemSpot = null; // Clear the item spot reference
     }
 
     private void OnDrawGizmos()

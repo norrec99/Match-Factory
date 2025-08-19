@@ -163,6 +163,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemPlacer: {fileID: 7681690858860953886}
+  levelDuration: 60
 --- !u!1001 &4944906023168477
 PrefabInstance:
   m_ObjectHideFlags: 0

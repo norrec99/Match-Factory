@@ -8,6 +8,7 @@ public class PowerUpManager : MonoBehaviour
 {
     [Header("Vacuum Power-Up Settings")]
     [SerializeField] private Transform vacuumSuckPoint;
+    [SerializeField] private Vacuum vacuum;
 
 
     private bool isBusy;
@@ -26,6 +27,31 @@ public class PowerUpManager : MonoBehaviour
     private void ListenEvents()
     {
         Vacuum.OnVacuumStarted += VacuumPowerUp;
+        InputManager.PowerupClickedAction += OnPowerupClicked;
+    }
+
+    private void OnPowerupClicked(Powerup powerup)
+    {
+        if (isBusy)
+        {
+            Debug.LogWarning("Power-up is already in use.");
+            return;
+        }
+
+        switch (powerup.PowerupType)
+        {
+            case EPowerupType.Vacuum:
+                HandleVacuumClicked();
+                break;
+            default:
+                Debug.LogWarning("Unsupported power-up type.");
+                break;
+        }
+    }
+
+    private void HandleVacuumClicked()
+    {
+        vacuum.Play();
     }
 
     [Button]
@@ -41,11 +67,7 @@ public class PowerUpManager : MonoBehaviour
             return;
         }
 
-        if (isBusy)
-        {
-            Debug.LogWarning("Power-up is already in use.");
-            return;
-        }
+
         isBusy = true;
         vacuumCounter = 0;
 
@@ -80,7 +102,7 @@ public class PowerUpManager : MonoBehaviour
                 {
                     ItemReachedVacuumPoint(itemToVacuum);
                 });
-            itemToVacuum.transform.DOScale(Vector3.one * 0.5f, 0.2f).SetDelay(0.1f);
+            itemToVacuum.transform.DOScale(Vector3.one * 0.2f, 0.2f).SetDelay(0.2f);
         }
     }
 
@@ -118,10 +140,11 @@ public class PowerUpManager : MonoBehaviour
 
         Destroy(item.gameObject);
     }
-    
+
     private void UnsubscribeEvents()
     {
         Vacuum.OnVacuumStarted -= VacuumPowerUp;
+        InputManager.PowerupClickedAction -= OnPowerupClicked;
     }
 
     private void OnDestroy()

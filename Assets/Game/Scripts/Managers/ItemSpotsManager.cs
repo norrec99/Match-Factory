@@ -31,7 +31,7 @@ public class ItemSpotsManager : MonoBehaviour
 
     private void ListenEvents()
     {
-        InputManager.OnItemSelected += OnItemClicked;
+        InputManager.ItemSelectedAction += OnItemClicked;
     }
 
     private void OnItemClicked(Item item)
@@ -327,7 +327,7 @@ public class ItemSpotsManager : MonoBehaviour
 
     private void UnsubscribeEvents()
     {
-        InputManager.OnItemSelected -= OnItemClicked;
+        InputManager.ItemSelectedAction -= OnItemClicked;
     }
 
     private void OnDestroy()

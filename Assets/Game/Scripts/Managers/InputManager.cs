@@ -5,13 +5,15 @@ public class InputManager : MonoBehaviour
 {
     [Header("Layer Mask")]
     [SerializeField] private LayerMask itemLayerMask; // Layer mask to filter raycast hits for items
+    [SerializeField] private LayerMask powerupLayerMask; // Layer mask to filter raycast hits for items
 
     private float rayDistance = 100f; // Distance for raycasting
     private Camera mainCamera;
 
     private Item currentItem;
 
-    public static Action<Item> OnItemSelected;
+    public static Action<Item> ItemSelectedAction;
+    public static Action<Powerup> PowerupClickedAction;
 
     void Awake()
     {
@@ -24,8 +26,31 @@ public class InputManager : MonoBehaviour
         {
             return; // Skip input handling if not in game state
         }
+        HandlePowerupClicked();
         HandleInputDrag();
         HandleInputRelease();
+    }
+
+    private void HandlePowerupClicked()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out RaycastHit hit, rayDistance, powerupLayerMask))
+            {
+                if (hit.collider == null)
+                {
+                    return;
+                }
+
+                if (!hit.collider.TryGetComponent(out Powerup powerup))
+                {
+                    return;
+                }
+
+                PowerupClickedAction?.Invoke(powerup);
+            }
+        }
     }
 
     private void HandleInputDrag()
@@ -74,7 +99,7 @@ public class InputManager : MonoBehaviour
                 return; // No item to release
             }
 
-            OnItemSelected?.Invoke(currentItem);
+            ItemSelectedAction?.Invoke(currentItem);
             DeselectCurrentItem();
         }
     }

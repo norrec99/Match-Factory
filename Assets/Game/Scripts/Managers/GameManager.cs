@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -14,7 +15,6 @@ public class GameManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject);
         }
         else
         {
@@ -44,6 +44,16 @@ public class GameManager : MonoBehaviour
         SetGameState(EGameState.Game);
     }
 
+    public void RetryButtonCallback()
+    {
+        SceneManager.LoadScene(0);
+    }
+
+    public void NextButtonCallback()
+    {
+        SceneManager.LoadScene(0);
+    }
+
     public void CompleteLevel()
     {
         SetGameState(EGameState.LevelComplete);
@@ -52,5 +62,10 @@ public class GameManager : MonoBehaviour
     public void GameOver()
     {
         SetGameState(EGameState.GameOver);
+    }
+
+    public bool IsGame()
+    {
+        return currentGameState == EGameState.Game;
     }
 }

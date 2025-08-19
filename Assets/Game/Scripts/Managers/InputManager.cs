@@ -20,6 +20,10 @@ public class InputManager : MonoBehaviour
 
     private void Update()
     {
+        if (!GameManager.Instance.IsGame())
+        {
+            return; // Skip input handling if not in game state
+        }
         HandleInputDrag();
         HandleInputRelease();
     }

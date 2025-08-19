@@ -27,12 +27,6 @@ public class LevelManager : MonoBehaviour, IGameStateListener
     {
         transform.Clear();
 
-        if (levelIndex < 0 || levelIndex >= levels.Length)
-        {
-            Debug.LogError("Invalid level index: " + levelIndex);
-            return;
-        }
-
         int validatedLevelIndex = levelIndex % levels.Length;
 
         currentLevel = Instantiate(levels[validatedLevelIndex], transform);
@@ -55,6 +49,11 @@ public class LevelManager : MonoBehaviour, IGameStateListener
         if (newState == EGameState.Game)
         {
             SpawnLevel();
+        }
+        else if (newState == EGameState.LevelComplete)
+        {
+            levelIndex++;
+            SaveData();
         }
     }
 }

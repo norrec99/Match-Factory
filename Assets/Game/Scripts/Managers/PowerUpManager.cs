@@ -9,11 +9,15 @@ public class PowerUpManager : MonoBehaviour
     [Header("Vacuum Power-Up Settings")]
     [SerializeField] private Transform vacuumSuckPoint;
     [SerializeField] private Vacuum vacuum;
+    [Header("Data")]
+    [SerializeField] private int initialPowerupCount;
 
 
     private bool isBusy;
+
     private int vacuumItemsToCollect;
     private int vacuumCounter;
+    private int vacuumPowerupCount;
 
     public static Action<Item> OnVacuumPowerUpUsed;
 
@@ -21,6 +25,7 @@ public class PowerUpManager : MonoBehaviour
 
     private void Awake()
     {
+        LoadData();
         ListenEvents();
     }
 
@@ -42,6 +47,7 @@ public class PowerUpManager : MonoBehaviour
         {
             case EPowerupType.Vacuum:
                 HandleVacuumClicked();
+                UpdateVacuumVisuals();
                 break;
             default:
                 Debug.LogWarning("Unsupported power-up type.");
@@ -51,7 +57,21 @@ public class PowerUpManager : MonoBehaviour
 
     private void HandleVacuumClicked()
     {
-        vacuum.Play();
+        if (vacuumPowerupCount <= 0)
+        {
+            // Can add rewarded ad logic here to replenish power-ups
+            vacuumPowerupCount = initialPowerupCount;
+            SaveData();
+        }
+        else
+        {
+            isBusy = true;
+            vacuumPowerupCount--;
+
+            SaveData();
+
+            vacuum.Play();
+        }
     }
 
     [Button]
@@ -67,10 +87,7 @@ public class PowerUpManager : MonoBehaviour
             return;
         }
 
-
-        isBusy = true;
         vacuumCounter = 0;
-
 
         ItemLevelData goal = (ItemLevelData)greatestGoal;
 
@@ -139,6 +156,22 @@ public class PowerUpManager : MonoBehaviour
         OnVacuumPowerUpUsed?.Invoke(item);
 
         Destroy(item.gameObject);
+    }
+
+    private void UpdateVacuumVisuals()
+    {
+       vacuum.UpdateVisuals(vacuumPowerupCount);
+    }
+
+    private void LoadData()
+    {
+        vacuumPowerupCount = PlayerPrefs.GetInt("VacuumPowerupCount", initialPowerupCount);
+        UpdateVacuumVisuals();
+    }
+
+    private void SaveData()
+    {
+        PlayerPrefs.SetInt("VacuumPowerupCount", vacuumPowerupCount);
     }
 
     private void UnsubscribeEvents()

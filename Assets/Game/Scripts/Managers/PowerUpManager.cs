@@ -9,6 +9,8 @@ public class PowerUpManager : MonoBehaviour
     [Header("Vacuum Power-Up Settings")]
     [SerializeField] private Transform vacuumSuckPoint;
     [SerializeField] private Vacuum vacuum;
+    [Header("Fan Power-Up Settings")]
+    [SerializeField] private float fanMagnitiude;
     [Header("Data")]
     [SerializeField] private int initialPowerupCount;
 
@@ -56,6 +58,18 @@ public class PowerUpManager : MonoBehaviour
         }
     }
 
+    #region Fan Power-Up Logic
+    [Button]
+    private void FanPowerUp()
+    {
+        Item[] items = LevelManager.Instance.Items;
+
+        foreach (Item item in items)
+        {
+            item.ApplyRandomForce(fanMagnitiude);
+        }
+    }
+    #endregion
     #region Spring Power-Up Logic
     [Button]
     private void SpringPowerUp()

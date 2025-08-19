@@ -64,6 +64,14 @@ public class Item : MonoBehaviour
     {
         itemSpot = null; // Clear the item spot reference
     }
+    public void ApplyRandomForce(float magnitude = 5f)
+    {
+        if (rb != null)
+        {
+            Vector3 randomDirection = Random.onUnitSphere; // Get a random direction
+            rb.AddForce(randomDirection * magnitude, ForceMode.VelocityChange);
+        }
+    }
 
     private void OnDrawGizmos()
     {

@@ -93,6 +93,8 @@ public class PowerUpManager : MonoBehaviour
 
         List<Item> itemsToVacuum = new List<Item>();
 
+        List<Vector3> pathPoints = new List<Vector3>();
+
         for (int i = 0; i < items.Length; i++)
         {
             if (items[i].ItemType == goal.itemPrefab.ItemType)
@@ -114,12 +116,16 @@ public class PowerUpManager : MonoBehaviour
 
             Item itemToVacuum = itemsToVacuum[i];
 
-            itemToVacuum.transform.DOMove(vacuumSuckPoint.position, 0.5f).SetEase(Ease.InCubic)
+            float middlePointY = (itemToVacuum.transform.position.y + vacuumSuckPoint.position.y) / 2 + 2f;
+
+            itemToVacuum.transform.DOMove(vacuumSuckPoint.position, 0.75f).SetEase(Ease.InCubic)
                 .OnComplete(() =>
                 {
                     ItemReachedVacuumPoint(itemToVacuum);
                 });
-            itemToVacuum.transform.DOScale(Vector3.one * 0.2f, 0.2f).SetDelay(0.2f);
+            itemToVacuum.transform.DOMoveY(middlePointY, 0.5f);
+            itemToVacuum.transform.DOMoveY(vacuumSuckPoint.position.y, 0.25f).SetDelay(0.5f);
+            itemToVacuum.transform.DOScale(Vector3.one * 0.2f, 0.5f).SetDelay(0.25f);
         }
     }
 

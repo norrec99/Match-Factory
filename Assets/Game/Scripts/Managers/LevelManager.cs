@@ -9,13 +9,24 @@ public class LevelManager : MonoBehaviour, IGameStateListener
     private int levelIndex = 0;
 
     private Level currentLevel;
+    public Item[] Items => currentLevel.GetItems();
 
     private const string LEVEL_KEY = "CurrentLevel";
 
     public static Action<Level> OnLevelSpawned;
 
+    public static LevelManager Instance;
+
     private void Awake()
     {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
         LoadData();
     }
 

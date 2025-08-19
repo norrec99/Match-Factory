@@ -8,10 +8,22 @@ public class GoalManager : MonoBehaviour
     [SerializeField] private GoalCard goalCardPrefab;
     [SerializeField] private Transform goalCardParent;
 
+    public ItemLevelData[] Goals => goals;
+
     private List<GoalCard> goalCards = new List<GoalCard>();
+
+    public static GoalManager Instance;
 
     void Awake()
     {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
         ListenEvents();
     }
 
@@ -19,6 +31,7 @@ public class GoalManager : MonoBehaviour
     {
         LevelManager.OnLevelSpawned += OnLevelSpawned;
         ItemSpotsManager.ItemPickedUpAction += OnItemPickedUp;
+        PowerUpManager.OnVacuumPowerUpUsed += OnItemPickedUp;
     }
 
     private void OnLevelSpawned(Level level)
@@ -80,7 +93,7 @@ public class GoalManager : MonoBehaviour
                 return; // Not all goals are completed
             }
         }
-
+        Debug.Log("All goals completed! Level complete.");
         GameManager.Instance.CompleteLevel();
     }
 
@@ -88,6 +101,7 @@ public class GoalManager : MonoBehaviour
     {
         LevelManager.OnLevelSpawned -= OnLevelSpawned;
         ItemSpotsManager.ItemPickedUpAction -= OnItemPickedUp;
+        PowerUpManager.OnVacuumPowerUpUsed -= OnItemPickedUp;
     }
 
     void OnDestroy()

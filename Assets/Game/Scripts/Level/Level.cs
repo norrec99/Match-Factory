@@ -12,4 +12,9 @@ public class Level : MonoBehaviour
     {
         return itemPlacer.GetGoals();
     }
+
+    public Item[] GetItems()
+    {
+        return itemPlacer.GetItems();
+    }
 }

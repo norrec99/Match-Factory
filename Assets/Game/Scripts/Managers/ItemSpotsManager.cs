@@ -172,9 +172,13 @@ public class ItemSpotsManager : MonoBehaviour
     {
         targetSpot.SetItem(item); // Set the item in the target item spot
 
+         float middlePointY = (item.transform.position.y + itemLocalPosition.y) / 2 + 2f;
+
         sequence?.Kill(true); // Kill any existing sequence to prevent conflicts
         sequence = DOTween.Sequence();
+        sequence.Append(item.transform.DOMoveY(1f, 0.15f));
         sequence.Append(item.transform.DOLocalMove(itemLocalPosition, 0.15f));
+        sequence.Join(item.transform.DOMoveY(itemLocalPosition.y, 0.15f));
         sequence.Join(item.transform.DOScale(itemLocalScale, 0.15f).SetEase(Ease.OutBack));
         sequence.Join(item.transform.DOLocalRotate(Vector3.zero, 0.15f));
         sequence.OnComplete(() => {

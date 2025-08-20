@@ -10,8 +10,12 @@ public class PowerUpManager : MonoBehaviour
     [SerializeField] private Transform vacuumSuckPoint;
     [SerializeField] private Vacuum vacuum;
     [Header("Fan Power-Up Settings")]
+    [SerializeField] private Fan fan;
     [SerializeField] private float fanMagnitiude;
-    [Header("Fan Power-Up Settings")]
+    [Header("Spring Power-Up Settings")]
+    [SerializeField] private Spring spring;
+    [Header("Freeze Power-Up Settings")]
+    [SerializeField] private Freeze freeze;
     [SerializeField] private float freezeDuration = 10f;
     [Header("Data")]
     [SerializeField] private int initialPowerupCount;
@@ -22,15 +26,27 @@ public class PowerUpManager : MonoBehaviour
     private int vacuumItemsToCollect;
     private int vacuumCounter;
     private int vacuumPowerupCount;
+    private int springPowerupCount;
+    private int fanPowerupCount;
+    private int freezePowerupCount;
 
     public static Action<Item> OnVacuumPowerUpUsed;
     public static Action<Item> ItemBackToGameAction;
 
     private const int MAX_VACUUM_ITEMS = 3;
 
+    private const string VACUUM_KEY = "VacuumPowerupCount";
+    private const string SPRING_KEY = "SpringPowerupCount";
+    private const string FAN_KEY = "FanPowerupCount";
+    private const string FREEZE_KEY = "FreezePowerupCount";
+
+
     private void Awake()
     {
-        LoadData();
+        LoadVacuumData();
+        LoadSpringData();
+        LoadFanData();
+        LoadFreezeData();
         ListenEvents();
     }
 
@@ -54,12 +70,46 @@ public class PowerUpManager : MonoBehaviour
                 HandleVacuumClicked();
                 UpdateVacuumVisuals();
                 break;
+            case EPowerupType.Spring:
+                HandleSpringClicked();
+                UpdateSpringVisuals();
+                break;
+            case EPowerupType.Fan:
+                HandleFanClicked();
+                UpdateFanVisuals();
+                break;
+            case EPowerupType.FreezeGun:
+                HandleFreezeClicked();
+                UpdateFreezeVisuals();
+                break;
             default:
                 Debug.LogWarning("Unsupported power-up type.");
                 break;
         }
     }
+
     #region Freeze Power-Up Logic
+    private void HandleFreezeClicked()
+    {
+        if (freezePowerupCount <= 0)
+        {
+            // Can add rewarded ad logic here to replenish power-ups
+            freezePowerupCount = initialPowerupCount;
+            SaveFreezeData();
+        }
+        else
+        {
+            freezePowerupCount--;
+
+            SaveFreezeData();
+
+            FreezePowerUp();
+        }
+    }
+    private void UpdateFreezeVisuals()
+    {
+        freeze.UpdateVisuals(freezePowerupCount);
+    }
     [Button]
     private void FreezePowerUp()
     {
@@ -67,6 +117,27 @@ public class PowerUpManager : MonoBehaviour
     }
     #endregion
     #region Fan Power-Up Logic
+    private void HandleFanClicked()
+    {
+        if (fanPowerupCount <= 0)
+        {
+            // Can add rewarded ad logic here to replenish power-ups
+            fanPowerupCount = initialPowerupCount;
+            SaveFanData();
+        }
+        else
+        {
+            fanPowerupCount--;
+
+            SaveFanData();
+
+            FanPowerUp();
+        }
+    }
+    private void UpdateFanVisuals()
+    {
+        fan.UpdateVisuals(fanPowerupCount);
+    }
     [Button]
     private void FanPowerUp()
     {
@@ -79,6 +150,27 @@ public class PowerUpManager : MonoBehaviour
     }
     #endregion
     #region Spring Power-Up Logic
+    private void HandleSpringClicked()
+    {
+        if (springPowerupCount <= 0)
+        {
+            // Can add rewarded ad logic here to replenish power-ups
+            springPowerupCount = initialPowerupCount;
+            SaveSpringData();
+        }
+        else
+        {
+            springPowerupCount--;
+
+            SaveSpringData();
+
+            SpringPowerUp();
+        }
+    }
+    private void UpdateSpringVisuals()
+    {
+       spring.UpdateVisuals(springPowerupCount);
+    }
     [Button]
     private void SpringPowerUp()
     {
@@ -88,8 +180,6 @@ public class PowerUpManager : MonoBehaviour
         {
             return;
         }
-
-        isBusy = true;
 
         Item itemToRelease = itemSpot.Item;
 
@@ -112,14 +202,14 @@ public class PowerUpManager : MonoBehaviour
         {
             // Can add rewarded ad logic here to replenish power-ups
             vacuumPowerupCount = initialPowerupCount;
-            SaveData();
+            SaveVacuumData();
         }
         else
         {
             isBusy = true;
             vacuumPowerupCount--;
 
-            SaveData();
+            SaveVacuumData();
 
             vacuum.Play();
         }
@@ -221,15 +311,41 @@ public class PowerUpManager : MonoBehaviour
         return goals[greatestGoalIndex];
     }
 
-    private void LoadData()
+    private void LoadVacuumData()
     {
-        vacuumPowerupCount = PlayerPrefs.GetInt("VacuumPowerupCount", initialPowerupCount);
+        vacuumPowerupCount = PlayerPrefs.GetInt(VACUUM_KEY, initialPowerupCount);
         UpdateVacuumVisuals();
     }
-
-    private void SaveData()
+    private void SaveVacuumData()
     {
-        PlayerPrefs.SetInt("VacuumPowerupCount", vacuumPowerupCount);
+        PlayerPrefs.SetInt(VACUUM_KEY, vacuumPowerupCount);
+    }
+    private void LoadSpringData()
+    {
+        springPowerupCount = PlayerPrefs.GetInt(SPRING_KEY, initialPowerupCount);
+        UpdateSpringVisuals();
+    }
+    private void SaveSpringData()
+    {
+        PlayerPrefs.SetInt(SPRING_KEY, springPowerupCount);
+    }
+    private void LoadFanData()
+    {
+        fanPowerupCount = PlayerPrefs.GetInt(FAN_KEY, initialPowerupCount);
+        UpdateFanVisuals();
+    }
+    private void SaveFanData()
+    {
+        PlayerPrefs.SetInt(FAN_KEY, fanPowerupCount);
+    }
+    private void LoadFreezeData()
+    {
+        freezePowerupCount = PlayerPrefs.GetInt(FREEZE_KEY, initialPowerupCount);
+        UpdateFreezeVisuals();
+    }
+    private void SaveFreezeData()
+    {
+        PlayerPrefs.SetInt(FREEZE_KEY, freezePowerupCount);
     }
 
     private void UnsubscribeEvents()

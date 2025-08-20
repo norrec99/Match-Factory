@@ -102,7 +102,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   powerupType: 0
+  amountText: {fileID: 0}
+  adIcon: {fileID: 0}
   animator: {fileID: 7794815818046690453}
+  col: {fileID: 3704070147671206346}
 --- !u!135 &3704070147671206346
 SphereCollider:
   m_ObjectHideFlags: 0

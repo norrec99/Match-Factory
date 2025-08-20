@@ -53,6 +53,7 @@ public class PowerUpManager : MonoBehaviour
     private void ListenEvents()
     {
         Vacuum.OnVacuumStarted += VacuumPowerUp;
+        Vacuum.OnVacuumEnded += OnVacuumEnded;
         InputManager.PowerupClickedAction += OnPowerupClicked;
     }
 
@@ -214,7 +215,10 @@ public class PowerUpManager : MonoBehaviour
             vacuum.Play();
         }
     }
-
+    private void OnVacuumEnded()
+    {
+        isBusy = false;
+    }
     [Button]
     private void VacuumPowerUp()
     {
@@ -266,7 +270,7 @@ public class PowerUpManager : MonoBehaviour
                 });
             itemToVacuum.transform.DOMoveY(middlePointY, 0.5f);
             itemToVacuum.transform.DOMoveY(vacuumSuckPoint.position.y, 0.25f).SetDelay(0.5f);
-            itemToVacuum.transform.DOScale(Vector3.one * 0.2f, 0.5f).SetDelay(0.25f);
+            // itemToVacuum.transform.DOScale(Vector3.one * 0.2f, 0.5f).SetDelay(0.5f);
         }
     }
 
@@ -351,6 +355,7 @@ public class PowerUpManager : MonoBehaviour
     private void UnsubscribeEvents()
     {
         Vacuum.OnVacuumStarted -= VacuumPowerUp;
+        Vacuum.OnVacuumEnded -= OnVacuumEnded;
         InputManager.PowerupClickedAction -= OnPowerupClicked;
     }
 

@@ -105,7 +105,6 @@ MonoBehaviour:
   amountText: {fileID: 0}
   adIcon: {fileID: 0}
   animator: {fileID: 7794815818046690453}
-  col: {fileID: 3704070147671206346}
 --- !u!135 &3704070147671206346
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -295,7 +294,7 @@ SkinnedMeshRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6824959902275903272}
   m_Enabled: 1
-  m_CastShadows: 1
+  m_CastShadows: 0
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0

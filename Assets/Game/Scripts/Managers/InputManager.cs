@@ -77,6 +77,10 @@ public class InputManager : MonoBehaviour
                 currentItem = item;
                 currentItem.Select(); // Call the Select method on the item
             }
+            else
+            {
+                DeselectCurrentItem();
+            }
         }
     }
 
